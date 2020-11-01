@@ -7,18 +7,19 @@ import 'materialize-css';
 import { Navbar } from './components/Navbar';
 
 function App() {
-    const { login, logout, token, userId } = useAuth();
-    const isAuthenticated = !!token;
-    const routes = useRoutes(isAuthenticated);
-    return (
-        <AuthContext.Provider value={{ login, logout, token, userId, isAuthenticated }}>
-            <Router>
-              { isAuthenticated && <Navbar /> }
-                <div className="container">{routes}</div>
-            </Router>
-        </AuthContext.Provider>
-    );
+  const { login, logout, token, userId } = useAuth();
+  const isAuthenticated = !!token;
+  const routes = useRoutes(isAuthenticated);
+  return (
+    <AuthContext.Provider
+      value={{ login, logout, token, userId, isAuthenticated }}
+    >
+      <Router>
+        {isAuthenticated && <Navbar />}
+        <div className="container">{routes}</div>
+      </Router>
+    </AuthContext.Provider>
+  );
 }
-
 
 export default App;
