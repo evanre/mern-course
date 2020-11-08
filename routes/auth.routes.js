@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const auth = require('../middleware/auth.middleware');
 const config = require('config');
 const router = Router();
 
@@ -95,5 +96,12 @@ router.post(
     }
   }
 );
+
+// /api/auth/
+router.get('/', auth, async (req, res) => {
+  try {
+    res.json({ ok: true });
+  } catch (e) {}
+});
 
 module.exports = router;

@@ -5,6 +5,7 @@ const Link = require('../models/Link');
 const auth = require('../middleware/auth.middleware');
 const router = Router();
 
+// /api/link/generate
 router.post('/generate', auth, async (req, res) => {
   try {
     const baseUrl = config.get('baseUrl');
