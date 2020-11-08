@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHttp } from '../hooks/http.hook';
 import { useMessage } from '../hooks/message.hook';
+// import { useWhyDidYouUpdate } from '../hooks/didUpdate.hook';
 import { AuthContext } from '../context/AuthContext';
 
 export const AuthPage = () => {
@@ -8,6 +9,8 @@ export const AuthPage = () => {
   const message = useMessage();
   const { loading, request, error, clearError } = useHttp();
   const [form, setForm] = useState({ email: '', password: '' });
+
+  // useWhyDidYouUpdate('AuthPage', [error, message, clearError]);
 
   useEffect(() => {
     if (error) {
