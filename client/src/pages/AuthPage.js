@@ -10,8 +10,10 @@ export const AuthPage = () => {
   const [form, setForm] = useState({ email: '', password: '' });
 
   useEffect(() => {
-    message(error);
-    clearError();
+    if (error) {
+      message(error);
+      clearError();
+    }
   }, [error, message, clearError]);
 
   useEffect(() => {
@@ -33,8 +35,10 @@ export const AuthPage = () => {
 
   const loginHandler = async () => {
     try {
-      const data = await request('/api/auth/login', 'POST', { ...form });
-      auth.login(data.token, data.userId);
+      const { token, userId } = await request('/api/auth/login', 'POST', {
+        ...form,
+      });
+      auth.login({ token, id: userId });
     } catch (e) {}
   };
 
@@ -42,7 +46,10 @@ export const AuthPage = () => {
     <div className="row">
       <div className="col s6 offset-3">
         <h1>Shorten the link</h1>
-        <form className="card blue darken-1">
+        <form
+          className="card blue darken-1"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <div className="card-content white-text">
             <span className="card-title">Authorization</span>
             <div className="input-field">

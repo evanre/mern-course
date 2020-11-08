@@ -1,36 +1,42 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useHttp } from './http.hook';
+import { useMessage } from './message.hook';
 
 const storageName = 'userData';
 
 export const useAuth = () => {
-  const [token, setToken] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const { request } = useHttp();
+  const message = useMessage();
+  const [user, setUser] = useState({});
 
-  const login = useCallback((jwtToken, id) => {
-    setToken(jwtToken);
-    setUserId(id);
+  const login = useCallback((usr) => {
+    setUser(usr);
 
-    console.log(jwtToken);
-
-    localStorage.setItem(
-      storageName,
-      JSON.stringify({ token: jwtToken, userId: id })
-    );
+    localStorage.setItem(storageName, JSON.stringify(usr));
   }, []);
 
   const logout = useCallback(() => {
-    setToken(null);
-    setUserId(null);
+    setUser({});
     localStorage.removeItem(storageName);
+    message('Logged Out!');
   }, []);
 
+  // Did mount
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem(storageName));
+    const { token, id } = JSON.parse(localStorage.getItem(storageName)) || {};
 
-    if (data && data.token) {
-      login(data.token, data.userId);
-    }
-  }, [login]);
+    if (!token) return;
 
-  return { login, logout, token, userId };
+    request('/api/auth', 'GET', null, {
+      Authorization: `Bearer ${token}`,
+    })
+      .then((res) => {
+        login({ token, id });
+      })
+      .catch((e) => {
+        logout();
+      });
+  }, [login, logout, request]);
+
+  return { login, logout, user };
 };
